@@ -1,8 +1,10 @@
 const express = require('express');
 const mongoose = require('mongoose');
+const cors = require('cors');
 require('dotenv').config(); // Load .env variables
 
 const app = express();
+app.use(cors());
 app.use(express.json()); // Allow JSON request bodies
 
 // Mongoose model
