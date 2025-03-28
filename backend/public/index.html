@@ -7,22 +7,37 @@
 </head>
 <body>
   <nav class="navbar navbar-expand-lg navbar-light bg-light shadow-sm">
-    <div class="container">
-      <a class="navbar-brand" href="/">📚 Book Tracker</a>
-      <div class="ms-auto">
-        <ul class="navbar-nav">
-          <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
-          <li class="nav-item"><a class="nav-link" href="/about.html">About</a></li>
-          <li class="nav-item"><a class="nav-link" href="/tbr.html">Current TBR</a></li>
-          <li class="nav-item"><a class="nav-link" href="/quests.html">Reading Quests</a></li>
-        </ul>
-      </div>
+  <div class="container">
+    <a class="navbar-brand" href="/">📚 Book Tracker</a>
+    <div class="ms-auto d-flex align-items-center">
+      <ul class="navbar-nav me-3">
+        <li class="nav-item"><a class="nav-link" href="/">Home</a></li>
+        <li class="nav-item"><a class="nav-link" href="/about.html">About</a></li>
+        <li class="nav-item"><a class="nav-link" href="/tbr.html">Current TBR</a></li>
+        <li class="nav-item"><a class="nav-link" href="/quests.html">Reading Quests</a></li>
+      </ul>
+      <a id="authLink" class="btn btn-outline-primary btn-sm" href="/login.html">Login</a>
     </div>
-  </nav>
+  </div>
+</nav>
 
   <div class="container mt-5">
     <h1>Welcome to My Book Tracker</h1>
     <p>This is the public-facing landing page. Explore my reading journey, upcoming books, and more!</p>
   </div>
+  <script>
+  // Check login status
+  fetch('/api/check-auth')
+    .then(res => res.status === 200)
+    .then(isLoggedIn => {
+      const authLink = document.getElementById('authLink');
+      if (isLoggedIn) {
+        authLink.textContent = 'Logout';
+        authLink.href = '/logout';
+        authLink.classList.remove('btn-outline-primary');
+        authLink.classList.add('btn-danger');
+      }
+    });
+</script>
 </body>
 </html>

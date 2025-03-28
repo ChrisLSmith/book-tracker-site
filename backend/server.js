@@ -90,6 +90,14 @@ app.get('/logout', (req, res) => {
   });
 });
 
+app.get('/api/check-auth', (req, res) => {
+  if (req.session.user === 'admin') {
+    res.sendStatus(200);
+  } else {
+    res.sendStatus(401);
+  }
+});
+
 const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
