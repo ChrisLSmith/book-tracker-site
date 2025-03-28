@@ -26,41 +26,53 @@
 
     <!-- Hidden until login is verified -->
     <div id="adminControls" style="display: none;">
-      <form id="bookForm" class="card p-4 mb-4 shadow-sm">
+      <form id="bookForm" class="card p-4 mb-4 shadow-lg bg-white rounded-4 border-0">
+        <h4 class="mb-3">➕ Add or Edit Book</h4>
+        
         <input type="hidden" id="bookId" />
-        <div class="mb-3"><input type="text" id="title" class="form-control" placeholder="Title" required /></div>
-        <div class="mb-3"><input type="text" id="author" class="form-control" placeholder="Author" /></div>
-        <div class="form-check form-check-inline">
-          <input type="checkbox" id="owned" class="form-check-input" />
-          <label for="owned" class="form-check-label">Owned</label>
+
+        <div class="row">
+          <div class="col-md-6 mb-3">
+            <label for="title" class="form-label">Title <span class="text-danger">*</span></label>
+            <input type="text" id="title" class="form-control" placeholder="Title" required />
+          </div>
+          <div class="col-md-6 mb-3">
+            <label for="author" class="form-label">Author</label>
+            <input type="text" id="author" class="form-control" placeholder="Author" />
+          </div>
         </div>
-        <div class="form-check form-check-inline">
-          <input type="checkbox" id="read" class="form-check-input" />
-          <label for="read" class="form-check-label">Read</label>
-        </div>
-        <div class="form-check form-check-inline">
-          <input type="checkbox" id="tbr" class="form-check-input" />
-          <label for="tbr" class="form-check-label">TBR</label>
+
+        <div class="row mb-3">
+          <div class="col-md-4">
+            <label for="wordCount" class="form-label">Word Count</label>
+            <input type="number" id="wordCount" class="form-control" />
+          </div>
+          <div class="col-md-4">
+            <label for="dateRead" class="form-label">Date Read</label>
+            <input type="date" id="dateRead" class="form-control" />
+          </div>
+          <div class="col-md-4 d-flex align-items-end">
+            <div class="form-check me-2">
+              <input type="checkbox" id="owned" class="form-check-input" />
+              <label for="owned" class="form-check-label">Owned</label>
+            </div>
+            <div class="form-check me-2">
+              <input type="checkbox" id="read" class="form-check-input" />
+              <label for="read" class="form-check-label">Read</label>
+            </div>
+            <div class="form-check">
+              <input type="checkbox" id="tbr" class="form-check-input" />
+              <label for="tbr" class="form-check-label">TBR</label>
+            </div>
+          </div>
         </div>
 
         <div class="mb-3">
           <label for="review" class="form-label">Review</label>
-          <textarea id="review" class="form-control" placeholder="Write a short review..."></textarea>
+          <textarea id="review" class="form-control" rows="4" placeholder="Write a short review..."></textarea>
         </div>
 
-        <div class="mb-3">
-          <label for="wordCount" class="form-label">Word Count</label>
-          <input type="number" id="wordCount" class="form-control" />
-        </div>
-
-        <div class="mb-3">
-          <label for="dateRead" class="form-label">Date Read</label>
-          <input type="date" id="dateRead" class="form-control" />
-        </div>
-
-        <div class="mt-3">
-          <button type="submit" class="btn btn-primary">Save Book</button>
-        </div>
+        <button type="submit" class="btn btn-primary">💾 Save Book</button>
       </form>
 
       <div id="bookList" class="row"></div>
@@ -90,15 +102,17 @@
         const div = document.createElement('div');
         div.className = 'col-md-4 mb-3';
         div.innerHTML = `
-          <div class="card p-3 shadow-sm">
-            <h5>${book.title}</h5>
-            <p>${book.author || ''}</p>
-            <p>${book.owned ? '📚 Owned' : ''} ${book.read ? '✅ Read' : ''} ${book.tbr ? '📝 TBR' : ''}</p>
+          <div class="card p-3 shadow-sm h-100 border-0 rounded-4 bg-white">
+            <h5 class="fw-bold mb-1">${book.title}</h5>
+            <p class="text-muted mb-2">${book.author || ''}</p>
+            <p>${book.owned ? '📚 Owned ' : ''}${book.read ? '✅ Read ' : ''}${book.tbr ? '📝 TBR' : ''}</p>
             ${book.review ? `<p><strong>Review:</strong> ${book.review}</p>` : ''}
             ${book.wordCount ? `<p><strong>Word Count:</strong> ${book.wordCount.toLocaleString()}</p>` : ''}
             ${book.dateRead ? `<p><strong>Date Read:</strong> ${book.dateRead}</p>` : ''}
-            <button class="btn btn-sm btn-warning" onclick='editBook(${JSON.stringify(book)})'>Edit</button>
-            <button class="btn btn-sm btn-danger" onclick='deleteBook("${book.id}")'>Delete</button>
+            <div class="d-flex justify-content-between mt-3">
+              <button class="btn btn-sm btn-warning" onclick='editBook(${JSON.stringify(book)})'>Edit</button>
+              <button class="btn btn-sm btn-danger" onclick='deleteBook("${book.id}")'>Delete</button>
+            </div>
           </div>
         `;
         bookList.appendChild(div);
