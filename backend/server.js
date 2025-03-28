@@ -58,6 +58,16 @@ app.delete('/api/books/:id', async (req, res) => {
   }
 });
 
+// GET: Get a book by ID
+app.get('/api/books/:id', async (req, res) => {
+  try {
+    const book = await Book.findById(req.params.id);
+    if (!book) return res.status(404).json({ error: 'Book not found' });
+    res.json(book);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
 
 // MongoDB connection
