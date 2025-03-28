@@ -18,7 +18,14 @@ const Book = sequelize.define('Book', {
   tbr: DataTypes.BOOLEAN,
   review: DataTypes.TEXT,
   wordCount: DataTypes.INTEGER,
-  dateRead: DataTypes.DATEONLY
+  dateRead: DataTypes.DATEONLY,
+  yearPublished: DataTypes.INTEGER,
+  fiction: DataTypes.BOOLEAN,
+  primaryGenre: DataTypes.STRING,
+  dateStarted: DataTypes.DATEONLY,
+  bookType: DataTypes.STRING,      // e.g., "Prose" or "Graphic Novel"
+  targetAge: DataTypes.STRING      // e.g., "Adult", "Young Adult", etc.
+
 });
 
 module.exports = { sequelize, Book };
