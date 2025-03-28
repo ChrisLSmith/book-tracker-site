@@ -15,7 +15,10 @@ const Book = sequelize.define('Book', {
   author: DataTypes.STRING,
   owned: DataTypes.BOOLEAN,
   read: DataTypes.BOOLEAN,
-  tbr: DataTypes.BOOLEAN
+  tbr: DataTypes.BOOLEAN,
+  review: DataTypes.TEXT,
+  wordCount: DataTypes.INTEGER,
+  dateRead: DataTypes.DATEONLY
 });
 
 module.exports = { sequelize, Book };

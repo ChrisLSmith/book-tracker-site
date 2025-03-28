@@ -29,8 +29,8 @@ function requireLogin(req, res, next) {
 }
 
 // Sync database
-sequelize.sync().then(() => {
-  console.log('✅ SQLite DB synced');
+sequelize.sync({ alter: true }).then(() => {
+  console.log('✅ SQLite DB synced (with schema updates)');
 }).catch(err => {
   console.error('❌ DB sync error:', err);
 });
