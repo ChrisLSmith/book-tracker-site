@@ -1,87 +1,56 @@
+require('dotenv').config();
 const express = require('express');
-const mongoose = require('mongoose');
 const cors = require('cors');
-require('dotenv').config(); // Load .env variables
+const { sequelize, Book } = require('./models');
 
 const app = express();
+
 app.use(cors());
-app.use(express.json()); // Allow JSON request bodies
+app.use(express.json());
 
-// Mongoose model
-const Book = require('./models/Book');
-
-// Root route for sanity check
-app.get('/', (req, res) => {
-  res.send('📚 Book Tracker Backend is Running');
+// Sync database
+sequelize.sync().then(() => {
+  console.log('✅ SQLite DB synced');
+}).catch(err => {
+  console.error('❌ DB sync error:', err);
 });
 
-// POST: Create a new book
-app.post('/api/books', async (req, res) => {
-  try {
-    const book = new Book(req.body);
-    await book.save();
-    res.status(201).json(book);
-  } catch (err) {
-    res.status(400).json({ error: err.message });
-  }
-});
 
-// GET: Retrieve all books
+const path = require('path');
+app.use(express.static(path.join(__dirname, 'public')));
+
+// Routes
+
 app.get('/api/books', async (req, res) => {
-  try {
-    const books = await Book.find();
-    res.json(books);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+  const books = await Book.findAll({ order: [['title', 'ASC']] });
+  res.json(books);
 });
 
-// PUT: Update a book by ID
-app.put('/api/books/:id', async (req, res) => {
-  try {
-    const book = await Book.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    if (!book) return res.status(404).json({ error: 'Book not found' });
-    res.json(book);
-  } catch (err) {
-    res.status(400).json({ error: err.message });
-  }
-});
-
-// DELETE: Delete a book by ID
-app.delete('/api/books/:id', async (req, res) => {
-  try {
-    const book = await Book.findByIdAndDelete(req.params.id);
-    if (!book) return res.status(404).json({ error: 'Book not found' });
-    res.json({ message: 'Book deleted successfully' });
-  } catch (err) {
-    res.status(400).json({ error: err.message });
-  }
-});
-
-// GET: Get a book by ID
 app.get('/api/books/:id', async (req, res) => {
-  try {
-    const book = await Book.findById(req.params.id);
-    if (!book) return res.status(404).json({ error: 'Book not found' });
-    res.json(book);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
+  const book = await Book.findByPk(req.params.id);
+  book ? res.json(book) : res.status(404).json({ error: 'Book not found' });
 });
 
+app.post('/api/books', async (req, res) => {
+  const book = await Book.create(req.body);
+  res.json(book);
+});
 
-// MongoDB connection
-console.log('Connecting to MongoDB with URI:', process.env.MONGO_URI); // optional debug line
+app.put('/api/books/:id', async (req, res) => {
+  const book = await Book.findByPk(req.params.id);
+  if (!book) return res.status(404).json({ error: 'Book not found' });
+  await book.update(req.body);
+  res.json(book);
+});
 
-mongoose.connect(process.env.MONGO_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-})
-.then(() => console.log('✅ Connected to MongoDB'))
-.catch(err => console.error('❌ MongoDB connection error:', err));
+app.delete('/api/books/:id', async (req, res) => {
+  const book = await Book.findByPk(req.params.id);
+  if (!book) return res.status(404).json({ error: 'Book not found' });
+  await book.destroy();
+  res.json({ message: 'Book deleted' });
+});
 
-// Start the server
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5001;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });
